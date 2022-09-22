@@ -3,7 +3,7 @@ SharedGarages = true   --True == Gang and job garages are shared, false == Gang 
 VisuallyDamageCars = true --True == Visually damage cars that go out of the garage depending of body damage, false == Do not visually damage cars (damage is still applied to car values)
 
 Garages = {
-    ["hookiesparking"] = {
+    ["parking_hookies"] = {
         label = "Hookies Parking",
         takeVehicle = vector3(-2203.4, 4245.22, 48.12),
         spawnPoint = vector4(-2197.9, 4249.41, 47.72, 36.31),
@@ -14,7 +14,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'car'                 --car, air, sea
     },
-    ["palaspringsparking"] = {
+    ["parking_palasprings"] = {
         label = "Pala Springs Parking",
         takeVehicle = vector3(-746.92, 5547.73, 33.61),
         spawnPoint = vector4(-752.48, 5541.09, 33.49, 125.58),
@@ -25,7 +25,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'car'                 --car, air, sea
     },
-    ["chumashplaza"] = {
+    ["parking_chumash"] = {
         label = "Chumash Plaza Parking",
         takeVehicle = vector3(-3158.18, 1126.55, 20.84),
         spawnPoint = vector4(-3174.18, 1107.37, 20.83, 335.07),
@@ -36,7 +36,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'car'                 --car, air, sea
     },
-    ["themotorhotel"] = {
+    ["parking_motorhotel"] = {
         label = "The Motor Hotel Parking",
         takeVehicle = vector3(1137.77, 2663.54, 37.9),
         spawnPoint = vector4(1137.69, 2673.61, 37.9, 359.5),
@@ -47,7 +47,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'car'                 --car, air, sea
     },
-    ["liqourparking"] = {
+    ["parking_liquor"] = {
         label = "Liqour Parking",
         takeVehicle = vector3(934.95, 3606.59, 32.81),
         spawnPoint = vector4(941.57, 3619.99, 32.5, 141.5),
@@ -58,7 +58,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'car'                 --car, air, sea
     },
-    ["shoreparking"] = {
+    ["parking_shore"] = {
         label = "Shore Parking",
         takeVehicle = vector3(1877.72, 3761.87, 32.95),
         spawnPoint = vector4(1877.92, 3755.28, 32.33, 208.69),
@@ -69,11 +69,22 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'car'                 --car, air, sea
     },
-    ["haanparking"] = {
+    ["parking_bellfarms"] = {
         label = "Bell Farms Parking",
         takeVehicle = vector3(78.34, 6418.74, 31.28),
         spawnPoint = vector4(70.71, 6425.16, 30.92, 68.5),
         putVehicle = vector3(85.3, 6427.52, 31.33),
+        showBlip = true,
+        blipName = "Public Parking",
+        blipNumber = 357,
+        type = 'public',                --public, job, gang, depot
+        vehicle = 'car'                 --car, air, sea
+    },
+    ["parking_zancudoautos"] = {
+        label = "Zancudo Autosports Parking",
+        takeVehicle = vector3(-1128.24, 2697.36, 18.8),
+        spawnPoint = vector4(-1134.84, 2692.38, 18.8, 150.05),
+        putVehicle = vector3(-1134.84, 2692.38, 18.8),
         showBlip = true,
         blipName = "Public Parking",
         blipNumber = 357,
@@ -183,7 +194,7 @@ Garages = {
         vehicle = 'car',              --car, air, sea
         job = "police"
     },*/
-    ["mckenzieHangar"] = {
+    ["hangar_mckenzie"] = {
         label = "McKenzie Hangar",
         takeVehicle = vector3(2151.39, 4790.72, 40.92),
         spawnPoint = vector4(2135.55, 4810.09, 41.77, 115.47),
@@ -194,7 +205,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'air'                 --car, air, sea
     },
-    ["sandyHangar"] = {
+    ["hangar_sandy"] = {
         label = "Sandy Shores Hangar",
         takeVehicle = vector3(1758.19, 3296.66, 41.14),
         spawnPoint = vector4(1740.98, 3279.08, 41.75, 106.77),
@@ -205,7 +216,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'air'                 --car, air, sea
     },
-    ["sandyDepot"] = {
+    ["depot_air_sandy"] = {
         label = "Air Depot",
         takeVehicle = vector3(1752.43, 3301.06, 41.17),
         spawnPoint = vector4(1740.98, 3279.08, 41.75, 106.77),
@@ -217,7 +228,7 @@ Garages = {
         vehicle = 'air'                 --car, air, sea
     },
 
-    ["submarineln_sea_bh"] = {
+    ["boathouse_submarine"] = {
         label = "Submarine Lane Pier",
         takeVehicle = vector3(-1605.5, 5258.41, 2.08),
         spawnPoint = vector4(-1598.6, 5261.7, 1.2, 27.4),
@@ -228,7 +239,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'sea'                 --car, air, sea
     },
-    ["boat_paleto"] = {
+    ["boathouse_paleto"] = {
         label = "Paleto Pier",
         takeVehicle = vector3(-277.46, 6637.2, 7.48),
         spawnPoint = vector4(-289.2, 6637.96, 1.01, 45.5),
@@ -239,7 +250,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'sea'                 --car, air, sea
     },
-    ["boat_catfish"] = {
+    ["boathouse_catfish"] = {
         label = "Catfish Pier",
         takeVehicle = vector3(3813.39, 4448.76, 3.4),
         spawnPoint = vector4(3860.93, 4447.22, 0.42, 274.85),
@@ -250,7 +261,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'sea'                 --car, air, sea
     },
-    ["boat_millars"] = {
+    ["boathouse_millars"] = {
         label = "Millars Marina",
         takeVehicle = vector3(1382.47, 4306.77, 36.79),
         spawnPoint = vector4(1421.31, 4247.81, 30.34, 213.94),
@@ -261,7 +272,7 @@ Garages = {
         type = 'public',                --public, job, gang, depot
         vehicle = 'sea'                 --car, air, sea
     },
-    ["boat_sandy"] = {
+    ["boathouse_sandy"] = {
         label = "Sandy Marina",
         takeVehicle = vector3(1447.28, 3761.85, 31.73),
         spawnPoint = vector4(1443.38, 3766.82, 30.19, 298.22),
@@ -272,7 +283,7 @@ Garages = {
         type = 'depot',                --public, job, gang, depot
         vehicle = 'sea'                 --car, air, sea
     },
-    ["boat_depot_paleto"] = {
+    ["depot_sea_paleto"] = {
         label = "Paleto Marina",
         takeVehicle = vector3(-278.3, 6621.67, 7.5),
         spawnPoint = vector4(-285.05, 6620.64, 0.83, 46.28),
