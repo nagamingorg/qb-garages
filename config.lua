@@ -198,7 +198,7 @@ Config.Garages = {
         ["jobType"] = "leo"
     },
     -- AIR --
-    ["air_mckenzie"] = {
+    /*["air_mckenzie"] = {
         ["label"] = "Airport Hangar",
         ["takeVehicle"] = vector3(2155.94, 4790.64, 41.05),
         ["spawnPoint"] = vector4(2127.91, 4804.82, 41.12, 114.59),
@@ -329,6 +329,6 @@ Config.Garages = {
         ["blipColor"] = 2,
         ["type"] = "public",                --public, job, gang, depot
         ["vehicle"] = "rig"                 --car, air, sea, rig
-    },
+    },*/
 }
 Config.HouseGarages = {}
