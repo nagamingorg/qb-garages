@@ -54,9 +54,9 @@ Config.Garages = {
     },
     ["haanparking"] = {
         ["label"] = "Bell Farms Parking",
-        ["takeVehicle"] = vector3(78.34, 6418.74, 31.28),
-        ["spawnPoint"] = vector4(70.71, 6425.16, 30.92, 68.5),
-        ["putVehicle"] = vector3(85.3, 6427.52, 31.33),
+        ["takeVehicle"] = vector3(84.68, 6421.37, 31.55),
+        ["spawnPoint"] = vector4(94.87, 6416.83, 31.16, 44.86),
+        ["putVehicle"] = vector3(78.34, 6418.74, 31.28),
         ["showBlip"] = true,
         ["blipName"] = "Public Parking",
         ["blipNumber"] = 357,
