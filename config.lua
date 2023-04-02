@@ -2,6 +2,7 @@ Config = {}
 Config.AutoRespawn = false --True == auto respawn cars that are outside into your garage on script restart, false == does not put them into your garage and players have to go to the impound
 Config.SharedGarages = false   --True == Gang and job garages are shared, false == Gang and Job garages are personal
 Config.VisuallyDamageCars = true --True == Visually damage cars that go out of the garage depending of body damage, false == Do not visually damage cars (damage is still applied to car values)
+Config.SharedPublicGarages = true
 
 Config.Garages = {
     ["themotorhotel"] = {
@@ -16,6 +17,18 @@ Config.Garages = {
         ["type"] = "public",                --public, job, gang, depot
         ["vehicle"] = "car"                 --car, air, sea, rig
     },
+    ["prisonparking"] = {
+      ["label"] = "Bolingbrook Penitentary Parking",
+      ["takeVehicle"] = vector3(1899.14, 2603.62, 45.93),
+      ["spawnPoint"] = vector4(1890.94, 2601.1, 45.54, 272.59),
+      ["putVehicle"] = vector3(1901.68, 2609.56, 45.74),
+      ["showBlip"] = false,
+      ["blipName"] = "Public Parking",
+      ["blipNumber"] = 357,
+      ["blipColor"] = 39,
+      ["type"] = "public",                --public, job, gang, depot
+      ["vehicle"] = "car"                 --car, air, sea, rig
+  },
     ["liqourparking"] = {
         ["label"] = "Liqour Parking",
         ["takeVehicle"] = vector3(934.95, 3606.59, 32.81),
@@ -32,7 +45,7 @@ Config.Garages = {
         ["label"] = "Shore Parking",
         ["takeVehicle"] = vector3(1726.21, 3707.16, 34.17),
         ["spawnPoint"] = vector4(1730.31, 3711.07, 34.2, 20.5),
-        ["putVehicle"] = vector3(1737.13, 3718.91, 34.04),
+        ["putVehicle"] = vector3(1728.49, 3714.72, 34.16),
         ["showBlip"] = true,
         ["blipName"] = "Public Parking",
         ["blipNumber"] = 357,
@@ -89,20 +102,6 @@ Config.Garages = {
         ["vehicle"] = "car"                 --car, air, sea, rig
     },
     -- --
-    ["bolingbroke_leo"] = {
-        ["label"] = "Bolingbroke Penitentary",
-        ["takeVehicle"] = vector3(1829.8, 2611.48, 45.6),
-        ["spawnPoint"] = vector4(1829.8, 2611.48, 45.6, 267.1),
-        ["putVehicle"] = vector3(1830.74, 2608.29, 45.59),
-        ["showBlip"] = false,
-        ["blipName"] = "Police Parking",
-        ["blipNumber"] = 357,
-        ["blipColor"] = 39,
-        ["type"] = "job",                --public, job, gang, depot
-        ["vehicle"] = "car",              --car, air, sea, rig
-        ["job"] = "police",
-        ["jobType"] = "leo"
-    },
     ["impoundlot"] = {
         ["label"] = "Impound Lot",
         ["takeVehicle"] = vector3(-428.56, 5986.05, 31.49),

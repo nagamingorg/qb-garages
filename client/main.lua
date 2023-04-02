@@ -258,7 +258,7 @@ RegisterNetEvent("qb-garages:client:VehicleList", function(data)
 
     QBCore.Functions.TriggerCallback("qb-garage:server:GetGarageVehicles", function(result)
         if result == nil then
-            QBCore.Functions.Notify(Lang:t("error.no_vehicles"), "error", 5000)
+            QBCore.Functions.Notify(Lang:t("error.no_vehicles"), "error", 8000)
         else
             local MenuGarageOptions = {
                 {
