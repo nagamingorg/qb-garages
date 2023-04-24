@@ -1,4 +1,6 @@
-Config = {}
+Config = Config or {}
+Config.UseTarget = GetConvar('UseTarget', 'false') == 'true'
+
 Config.AutoRespawn = false --True == auto respawn cars that are outside into your garage on script restart, false == does not put them into your garage and players have to go to the impound
 Config.SharedGarages = false   --True == Gang and job garages are shared, false == Gang and Job garages are personal
 Config.VisuallyDamageCars = true --True == Visually damage cars that go out of the garage depending of body damage, false == Do not visually damage cars (damage is still applied to car values)
@@ -17,47 +19,23 @@ Config.Garages = {
         ["type"] = "public",                --public, job, gang, depot
         ["vehicle"] = "car"                 --car, air, sea, rig
     },
-    ["prisonparking"] = {
-      ["label"] = "Bolingbrook Penitentary Parking",
-      ["takeVehicle"] = vector3(1899.14, 2603.62, 45.93),
-      ["spawnPoint"] = vector4(1890.94, 2601.1, 45.54, 272.59),
-      ["putVehicle"] = vector3(1901.68, 2609.56, 45.74),
-      ["showBlip"] = false,
+    ["dreamviewparking"] = {
+      ["label"] = "Dreamview motel parking",
+      ["takeVehicle"] = vector4(-96.17, 6324.61, 31.58, 125.94),
+      ["spawnPoint"] = vector4(-87.39, 6324.34, 31.49, 134.03),
+      ["putVehicle"] = vector4(-98.36, 6306.01, 31.49, 310.16),
+      ["showBlip"] = true,
       ["blipName"] = "Public Parking",
       ["blipNumber"] = 357,
       ["blipColor"] = 39,
       ["type"] = "public",                --public, job, gang, depot
       ["vehicle"] = "car"                 --car, air, sea, rig
-  },
-    ["liqourparking"] = {
-        ["label"] = "Liqour Parking",
-        ["takeVehicle"] = vector3(934.95, 3606.59, 32.81),
-        ["spawnPoint"] = vector4(941.57, 3619.99, 32.5, 141.5),
-        ["putVehicle"] = vector3(939.37, 3612.25, 32.69),
-        ["showBlip"] = true,
-        ["blipName"] = "Public Parking",
-        ["blipNumber"] = 357,
-        ["blipColor"] = 39,
-        ["type"] = "public",                --public, job, gang, depot
-        ["vehicle"] = "car"                 --car, air, sea, rig
     },
     ["shoreparking"] = {
         ["label"] = "Shore Parking",
-        ["takeVehicle"] = vector3(1726.21, 3707.16, 34.17),
-        ["spawnPoint"] = vector4(1730.31, 3711.07, 34.2, 20.5),
-        ["putVehicle"] = vector3(1728.49, 3714.72, 34.16),
-        ["showBlip"] = true,
-        ["blipName"] = "Public Parking",
-        ["blipNumber"] = 357,
-        ["blipColor"] = 39,
-        ["type"] = "public",                --public, job, gang, depot
-        ["vehicle"] = "car"                 --car, air, sea, rig
-    },
-    ["haanparking"] = {
-        ["label"] = "Bell Farms Parking",
-        ["takeVehicle"] = vector3(84.68, 6421.37, 31.55),
-        ["spawnPoint"] = vector4(94.87, 6416.83, 31.16, 44.86),
-        ["putVehicle"] = vector3(78.34, 6418.74, 31.28),
+        ["takeVehicle"] = vector3(1875.04, 3760.45, 32.97),
+        ["spawnPoint"] = vector4(1880.44, 3757.67, 32.92, 216.76),
+        ["putVehicle"] = vector3(1880.44, 3757.67, 32.92),
         ["showBlip"] = true,
         ["blipName"] = "Public Parking",
         ["blipNumber"] = 357,
@@ -77,18 +55,6 @@ Config.Garages = {
         ["type"] = "public",                --public, job, gang, depot
         ["vehicle"] = "car"                 --car, air, sea, rig
     },
-    ["humane"] = {
-        ["label"] = "Humane Labs",
-        ["takeVehicle"] = vector3(3431.84, 3769.46, 30.49),
-        ["spawnPoint"] = vector4(3431.84, 3769.46, 30.499, 119.93),
-        ["putVehicle"] = vector3(3429.91, 3759.05, 30.49),
-        ["showBlip"] = true,
-        ["blipName"] = "Public Parking",
-        ["blipNumber"] = 357,
-        ["blipColor"] = 39,
-        ["type"] = "public",                --public, job, gang, depot
-        ["vehicle"] = "car"                 --car, air, sea, rig
-    },
     ["zancudo"] = {
         ["label"] = "Fort Zancudo",
         ["takeVehicle"] = vector3(-2241.68, 3322.44, 33.26),
@@ -101,11 +67,23 @@ Config.Garages = {
         ["type"] = "public",                --public, job, gang, depot
         ["vehicle"] = "car"                 --car, air, sea, rig
     },
+    ["sahp"] = {
+        ["label"] = "San Andreas State Building",
+        ["takeVehicle"] = vector3(2575.45, -297.2, 93.08),
+        ["spawnPoint"] = vector4(2588.33, -315.41, 92.89, 180.94),
+        ["putVehicle"] = vector3(2581.44, -285.34, 92.99),
+        ["showBlip"] = true,
+        ["blipName"] = "Public Parking",
+        ["blipNumber"] = 357,
+        ["blipColor"] = 39,
+        ["type"] = "public",                --public, job, gang, depot
+        ["vehicle"] = "car"                 --car, air, sea, rig
+    },
     -- --
     ["impoundlot"] = {
         ["label"] = "Impound Lot",
         ["takeVehicle"] = vector3(-428.56, 5986.05, 31.49),
-        ["spawnPoint"] = vector4(-436.73, 5981.73, 31.06, 314.97),
+        ["spawnPoint"] = vector4(-423.32, 5993.94, 31.49, 316.69),
         ["showBlip"] = true,
         ["blipName"] = "Impound Lot",
         ["blipNumber"] = 68,
