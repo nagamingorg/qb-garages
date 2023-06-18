@@ -198,7 +198,9 @@ end
 local function doCarDamage(currentVehicle, veh)
     local engine = veh.engine + 0.0
     local body = veh.body + 0.0
-
+    -- SetVehicleEngineHealth(currentVehicle, engine) -- Moved to invocation
+    SetVehicleEngineTorqueMultiplier(currentVehicle, 1.0)
+    SetVehicleBodyHealth(currentVehicle, body)
     if Config.VisuallyDamageCars then
         local data = json.decode(veh.mods)
 
@@ -218,8 +220,6 @@ local function doCarDamage(currentVehicle, veh)
             end
         end
     end
-    SetVehicleEngineHealth(currentVehicle, engine)
-    SetVehicleBodyHealth(currentVehicle, body)
 end
 
 local function CheckPlayers(vehicle, garage)
@@ -331,6 +331,7 @@ RegisterNetEvent('qb-garages:client:takeOutGarage', function(data)
     local vehicle = data.vehicle
     local garage = data.garage
     local index = data.index
+    local veh
     QBCore.Functions.TriggerCallback('qb-garage:server:IsSpawnOk', function(spawn)
         if spawn then
             local location
@@ -341,7 +342,7 @@ RegisterNetEvent('qb-garages:client:takeOutGarage', function(data)
                 location = garage.spawnPoint
             end
             QBCore.Functions.TriggerCallback('qb-garage:server:spawnvehicle', function(netId, properties)
-                local veh = NetToVeh(netId)
+                veh = NetToVeh(netId)
                 QBCore.Functions.SetVehicleProperties(veh, properties)
                 exports['LegacyFuel']:SetFuel(veh, vehicle.fuel)
                 doCarDamage(veh, vehicle)
@@ -355,6 +356,7 @@ RegisterNetEvent('qb-garages:client:takeOutGarage', function(data)
                     InputIn = true
                 end
             end, vehicle, location, true)
+            SetVehicleEngineHealth(veh, vehicle.engine)
         else
             QBCore.Functions.Notify(Lang:t("error.not_impound"), "error", 5000)
         end
