@@ -65,7 +65,7 @@ local function DepositVehicle(veh, data)
             local bodyDamage = math.ceil(GetVehicleBodyHealth(veh))
             local engineDamage = math.ceil(GetVehicleEngineHealth(veh))
             local totalFuel = exports[Config.FuelResource]:GetFuel(veh)
-            TriggerServerEvent('qb-vehicletuning:server:SaveVehicleProps', QBCore.Functions.GetVehicleProperties(veh))
+            TriggerServerEvent('qb-mechanicjob:server:SaveVehicleProps', QBCore.Functions.GetVehicleProperties(veh))
             TriggerServerEvent('qb-garages:server:updateVehicleStats', plate, totalFuel, engineDamage, bodyDamage)
             CheckPlayers(veh)
             if plate then TriggerServerEvent('qb-garages:server:UpdateOutsideVehicle', plate, nil) end
@@ -102,6 +102,7 @@ local function CreateZone(index, garage, zoneType)
     local zone = CircleZone:Create(garage.takeVehicle, 10.0, {
         name = zoneType .. '_' .. index,
         debugPoly = false,
+        useZ = true,
         data = {
             indexgarage = index,
             type = garage.type,
@@ -182,18 +183,24 @@ end
 local function doCarDamage(currentVehicle, stats, props)
     local engine = stats.engine + 0.0
     local body = stats.body + 0.0
-    if not next(props) then return end
-    for k, v in pairs(props.doorStatus) do
-        if v then SetVehicleDoorBroken(currentVehicle, tonumber(k), true) end
-    end
-    for k, v in pairs(props.tireBurstState) do
-        if v then SetVehicleTyreBurst(currentVehicle, tonumber(k), true) end
-    end
-    for k, v in pairs(props.windowStatus) do
-        if not v then SmashVehicleWindow(currentVehicle, tonumber(k)) end
-    end
     SetVehicleEngineHealth(currentVehicle, engine)
     SetVehicleBodyHealth(currentVehicle, body)
+    if not next(props) then return end
+    if props.doorStatus then
+        for k, v in pairs(props.doorStatus) do
+            if v then SetVehicleDoorBroken(currentVehicle, tonumber(k), true) end
+        end
+    end
+    if props.tireBurstState then
+        for k, v in pairs(props.tireBurstState) do
+            if v then SetVehicleTyreBurst(currentVehicle, tonumber(k), true) end
+        end
+    end
+    if props.windowStatus then
+        for k, v in pairs(props.windowStatus) do
+            if not v then SmashVehicleWindow(currentVehicle, tonumber(k)) end
+        end
+    end
 end
 
 function GetSpawnPoint(garage)
@@ -263,31 +270,43 @@ RegisterNetEvent('qb-garages:client:trackVehicle', function(coords)
     SetNewWaypoint(coords.x, coords.y)
 end)
 
+local function CheckPlate(vehicle, plateToSet)
+    local vehiclePlate = promise.new()
+    CreateThread(function()
+        while true do
+            Wait(500)
+            if GetVehicleNumberPlateText(vehicle) == plateToSet then
+                vehiclePlate:resolve(true)
+                return
+            else
+                SetVehicleNumberPlateText(vehicle, plateToSet)
+            end
+        end
+    end)
+    return vehiclePlate
+end
+
 RegisterNetEvent('qb-garages:client:takeOutGarage', function(data)
-    local type = data.type
-    local vehicle = data.vehicle
-    local garage = data.garage
-    local plate = data.plate
-    local stats = data.stats
     QBCore.Functions.TriggerCallback('qb-garages:server:IsSpawnOk', function(spawn)
         if spawn then
-            local location = GetSpawnPoint(garage)
-            QBCore.Functions.TriggerCallback('qb-garages:server:spawnvehicle', function(netId, properties)
+            local location = GetSpawnPoint(data.garage)
+            if not location then return end
+            QBCore.Functions.TriggerCallback('qb-garages:server:spawnvehicle', function(netId, properties, vehPlate)
                 while not NetworkDoesNetworkIdExist(netId) do Wait(10) end
-                local veh = NetToVeh(netId)
-                if Config.Warp then TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1) end
-                SetVehicleNumberPlateText(veh, plate)
+                local veh = NetworkGetEntityFromNetworkId(netId)
+                Citizen.Await(CheckPlate(veh, vehPlate))
                 QBCore.Functions.SetVehicleProperties(veh, properties)
-                exports[Config.FuelResource]:SetFuel(veh, vehicle.fuel)
-                TriggerServerEvent('qb-garages:server:updateVehicleState', 0, plate)
-                TriggerEvent('vehiclekeys:client:SetOwner', plate)
-                if Config.VisuallyDamageCars then doCarDamage(veh, stats, properties) end
+                exports[Config.FuelResource]:SetFuel(veh, data.vehicle.fuel)
+                TriggerServerEvent('qb-garages:server:updateVehicleState', 0, vehPlate)
+                TriggerEvent('vehiclekeys:client:SetOwner', vehPlate)
+                if Config.Warp then TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1) end
+                if Config.VisuallyDamageCars then doCarDamage(veh, data.stats, properties) end
                 SetVehicleEngineOn(veh, true, true, false)
-            end, plate, vehicle, location, true)
+            end, data.plate, data.vehicle, location, true)
         else
             QBCore.Functions.Notify(Lang:t('error.not_depot'), 'error', 5000)
         end
-    end, plate, type)
+    end, data.plate, data.type)
 end)
 
 -- Housing calls
@@ -300,9 +319,11 @@ local function CreateHouseZone(index, garage, zoneType)
     local houseZone = CircleZone:Create(garage.takeVehicle, 5.0, {
         name = zoneType .. '_' .. index,
         debugPoly = false,
+        useZ = true,
         data = {
             indexgarage = index,
             type = zoneType,
+            category = garage.category
         }
     })
 
@@ -310,7 +331,7 @@ local function CreateHouseZone(index, garage, zoneType)
         houseGarageZones[#houseGarageZones + 1] = houseZone
 
         if not houseComboZones then
-            houseComboZones = ComboZone:Create(houseGarageZones, { name = 'houseComboZones', debugPoly = true })
+            houseComboZones = ComboZone:Create(houseGarageZones, { name = 'houseComboZones', debugPoly = false })
         else
             houseComboZones:AddZone(houseZone)
         end
@@ -372,6 +393,21 @@ RegisterNetEvent('qb-garages:client:setHouseGarage', function(house, hasKey) -- 
         elseif not hasKey and ZoneExists(zoneName) then
             RemoveHouseZone(zoneName)
         end
+    else
+        QBCore.Functions.TriggerCallback('qb-garages:server:getHouseGarage', function(garageInfo) -- create garage if not exist
+            local garageCoords = json.decode(garageInfo.garage)
+            Config.Garages[formattedHouseName] = {
+                houseName = house,
+                takeVehicle = vector3(garageCoords.x, garageCoords.y, garageCoords.z),
+                spawnPoint = {
+                    vector4(garageCoords.x, garageCoords.y, garageCoords.z, garageCoords.w)
+                },
+                label = garageInfo.label,
+                type = 'house',
+                category = Config.VehicleClass['all']
+            }
+            TriggerServerEvent('qb-garages:server:syncGarage', Config.Garages)
+        end, house)
     end
 end)
 
@@ -380,27 +416,33 @@ RegisterNetEvent('qb-garages:client:houseGarageConfig', function(houseGarages)
         local formattedHouseName = string.gsub(string.lower(garageConfig.label), ' ', '')
         if garageConfig.takeVehicle and garageConfig.takeVehicle.x and garageConfig.takeVehicle.y and garageConfig.takeVehicle.z and garageConfig.takeVehicle.w then
             Config.Garages[formattedHouseName] = {
+                houseName = house,
                 takeVehicle = vector3(garageConfig.takeVehicle.x, garageConfig.takeVehicle.y, garageConfig.takeVehicle.z),
                 spawnPoint = {
                     vector4(garageConfig.takeVehicle.x, garageConfig.takeVehicle.y, garageConfig.takeVehicle.z, garageConfig.takeVehicle.w)
                 },
                 label = garageConfig.label,
                 type = 'house',
+                category = Config.VehicleClass['all']
             }
         end
     end
+    TriggerServerEvent('qb-garages:server:syncGarage', Config.Garages)
 end)
 
 RegisterNetEvent('qb-garages:client:addHouseGarage', function(house, garageInfo) -- event from housing on garage creation
     local formattedHouseName = string.gsub(string.lower(house), ' ', '')
     Config.Garages[formattedHouseName] = {
+        houseName = house,
         takeVehicle = vector3(garageInfo.takeVehicle.x, garageInfo.takeVehicle.y, garageInfo.takeVehicle.z),
         spawnPoint = {
             vector4(garageInfo.takeVehicle.x, garageInfo.takeVehicle.y, garageInfo.takeVehicle.z, garageInfo.takeVehicle.w)
         },
         label = garageInfo.label,
         type = 'house',
+        category = Config.VehicleClass['all']
     }
+    TriggerServerEvent('qb-garages:server:syncGarage', Config.Garages)
 end)
 
 -- Handlers

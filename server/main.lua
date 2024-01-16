@@ -8,6 +8,8 @@ AddEventHandler('onResourceStart', function(resource)
         Wait(100)
         if Config['AutoRespawn'] then
             MySQL.update('UPDATE player_vehicles SET state = 1 WHERE state = 0', {})
+        else
+            MySQL.update('UPDATE player_vehicles SET depotprice = 500 WHERE state = 0', {})
         end
     end
 end)
@@ -67,6 +69,11 @@ end
 
 -- Callbacks
 
+QBCore.Functions.CreateCallback('qb-garages:server:getHouseGarage', function(_, cb, house)
+    local houseInfo = MySQL.single.await('SELECT * FROM houselocations WHERE name = ?', { house })
+    cb(houseInfo)
+end)
+
 QBCore.Functions.CreateCallback('qb-garages:server:GetGarageVehicles', function(source, cb, garage, type, category)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
@@ -115,20 +122,15 @@ end
 
 -- Spawns a vehicle and returns its network ID and properties.
 QBCore.Functions.CreateCallback('qb-garages:server:spawnvehicle', function(source, cb, plate, vehicle, coords)
-    local netId
     local vehType = QBCore.Shared.Vehicles[vehicle] and QBCore.Shared.Vehicles[vehicle].type or GetVehicleTypeByModel(vehicle)
     local veh = CreateVehicleServerSetter(GetHashKey(vehicle), vehType, coords.x, coords.y, coords.z, coords.w)
-    while not DoesEntityExist(veh) do Wait(10) end
-    netId = NetworkGetNetworkIdFromEntity(veh)
-    while not netId do
-        netId = NetworkGetNetworkIdFromEntity(veh)
-        Wait(10)
-    end
+    local netId = NetworkGetNetworkIdFromEntity(veh)
+    SetVehicleNumberPlateText(veh, plate)
     local vehProps = {}
     local result = MySQL.rawExecute.await('SELECT mods FROM player_vehicles WHERE plate = ?', { plate })
     if result and result[1] then vehProps = json.decode(result[1].mods) end
     OutsideVehicles[plate] = { netID = netId, entity = veh }
-    cb(netId, vehProps)
+    cb(netId, vehProps, plate)
 end)
 
 -- Checks if a vehicle can be spawned based on its type and location.
@@ -147,7 +149,7 @@ QBCore.Functions.CreateCallback('qb-garages:server:canDeposit', function(source,
         cb(false)
         return
     end
-    if type == 'house' and not exports['qb-houses']:hasKey(Player.PlayerData.license, Player.PlayerData.citizenid, Config.HouseGarages[garage].label) then
+    if type == 'house' and not exports['qb-houses']:hasKey(Player.PlayerData.license, Player.PlayerData.citizenid, Config.Garages[garage].houseName) then
         cb(false)
         return
     end
@@ -162,11 +164,17 @@ end)
 -- Events
 
 RegisterNetEvent('qb-garages:server:updateVehicleStats', function(plate, fuel, engine, body)
-    MySQL.update('UPDATE player_vehicles SET fuel = ?, engine = ?, body = ? WHERE plate = ?', { fuel, engine, body, plate })
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    MySQL.update('UPDATE player_vehicles SET fuel = ?, engine = ?, body = ? WHERE plate = ? AND citizenid = ?', { fuel, engine, body, plate, Player.PlayerData.citizenid })
 end)
 
 RegisterNetEvent('qb-garages:server:updateVehicleState', function(state, plate)
-    MySQL.update('UPDATE player_vehicles SET state = ?, depotprice = ? WHERE plate = ?', { state, 0, plate })
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    MySQL.update('UPDATE player_vehicles SET state = ?, depotprice = ? WHERE plate = ? AND citizenid = ?', { state, 0, plate, Player.PlayerData.citizenid })
 end)
 
 RegisterNetEvent('qb-garages:server:UpdateOutsideVehicle', function(plate, vehicleNetID)
@@ -194,7 +202,7 @@ RegisterNetEvent('qb-garages:server:PayDepotPrice', function(data)
     local bankBalance = Player.PlayerData.money['bank']
     MySQL.scalar('SELECT depotprice FROM player_vehicles WHERE plate = ?', { data.plate }, function(result)
         if result then
-            local depotPrice = result[1].depotprice
+            local depotPrice = result
 
             if cashBalance >= depotPrice then
                 Player.Functions.RemoveMoney('cash', depotPrice, 'paid-depot')
@@ -207,6 +215,12 @@ RegisterNetEvent('qb-garages:server:PayDepotPrice', function(data)
             end
         end
     end)
+end)
+
+-- House Garages
+
+RegisterNetEvent('qb-garages:server:syncGarage', function(updatedGarages)
+    Config.Garages = updatedGarages
 end)
 
 --Call from qb-phone
